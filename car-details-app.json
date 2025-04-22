@@ -1,0 +1,23 @@
+{
+    "title":"Car Details",
+    "type":"window",
+    "name":"car-details-app",
+    "autoStart": false,
+    "allowMultiple": false,
+    "hidden": false,
+    "service": false,
+    "details": {
+        "url": "http://localhost:3002",
+        "mode": "tab",
+        "left": 300,
+        "top": 100,
+        "width": 700,
+        "height": 500,
+        "security": {
+            "sandbox": false
+        }
+    },
+    "customProperties": {
+        "includeInWorkspaces": true
+    }
+}

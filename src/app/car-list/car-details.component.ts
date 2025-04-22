@@ -1,0 +1,107 @@
+import { Component, OnInit, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { CarService } from './car.service';
+import { Car } from './interfaces/car.component';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+
+@Component({
+  selector: 'car-deatils',
+  imports: [RouterOutlet, CommonModule, MatTableModule, MatButtonModule],
+  templateUrl: './car-details.component.html',
+  styleUrl: './car-details.component.scss'
+})
+export class CarListComponent implements OnInit {
+    public cars = signal<Car[]>([]);
+    public selectedCarId = signal<string | null>(null as string | null);
+
+    public displayedColumns = ['make', 'model', 'type', 'publisher', 'actions'];
+    
+    
+    constructor(private _carService: CarService) { };
+
+    public ngOnInit(): void {
+        this.loadCars();
+    }
+
+    public loadCars(): void {
+        this._carService.getCars().subscribe(data => {
+          this.cars.set(data);
+        });
+    }
+    
+    // public addCar(): void {
+    //     const completeCar: Car = {
+    //         ...this.newCar,
+    //         features: this.generateEmptyFeatures(),
+    //         pictures: [],
+    //         publisher: {
+    //         id: crypto.randomUUID(),
+    //         firstName: 'John',
+    //         lastName: 'Doe',
+    //         displayName: 'JohnD',
+    //         phone: '+123456789',
+    //         address: 'Some Street 123',
+    //         profilePicture: ''
+    //         }
+    //     } as Car;
+
+    //     this._carService.createCar(completeCar).subscribe(created => {
+    //         this.cars.update(cars => [...cars, created]);
+    //         this.resetForm();
+    //     });
+    // }
+
+    public deleteCar(id: string): void {
+        this._carService.deleteCar(id).subscribe(() => {
+            this.cars.update(cars => cars.filter(car => car.id !== id));
+        });
+    }
+
+    // Function to handle selection
+    public selectCar(id: string): void {
+        if (this.selectedCarId() === id) {
+            this.selectedCarId.set(null); // Deselect if already selected
+           
+            return;
+        }
+
+        this.selectedCarId.set(id);
+    }
+
+    // Check if a car is selected
+    public isSelected(id: string): boolean {
+        return this.selectedCarId() === id;
+    }
+
+    // public resetForm() {
+    //     this.newCar = {
+    //         make: '',
+    //         model: '',
+    //         type: '',
+    //         features: {},
+    //         pictures: [],
+    //         publisher: {
+    //         id: '',
+    //         firstName: '',
+    //         lastName: '',
+    //         displayName: '',
+    //         phone: '',
+    //         address: '',
+    //         profilePicture: ''
+    //         }
+    //     };
+    // }
+
+    // private generateEmptyFeatures(): { [key: string]: boolean } {
+    //     const keys = [
+    //         "airConditioning", "sunroof", "heatedSeats", "bluetooth",
+    //         "backupCamera", "cruiseControl", "laneAssist", "parkingSensors",
+    //         "keylessEntry", "remoteStart", "leatherSeats", "navigationSystem",
+    //         "appleCarPlay", "androidAuto", "blindSpotMonitor", "adaptiveHeadlights",
+    //         "fogLights", "alloyWheels", "tintedWindows", "sportPackage"
+    //     ];
+    //     return Object.fromEntries(keys.map(k => [k, false]));
+    // }
+}
