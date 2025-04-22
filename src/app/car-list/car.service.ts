@@ -20,9 +20,4 @@ export class CarService {
   updateCar(id: string, car: Car): Observable<Car> {
     return this.http.put<Car>(`${this.apiUrl}/${id}`, car);
   }
-
-  // DELETE a car
-  deleteCar(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
 }
