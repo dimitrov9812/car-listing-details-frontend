@@ -11,19 +11,9 @@ export class CarService {
 
   constructor(private http: HttpClient) {}
 
-  // GET all cars
-  getCars(): Observable<Car[]> {
-    return this.http.get<Car[]>(this.apiUrl);
-  }
-
   // GET car by ID
   getCarById(id: string): Observable<Car> {
     return this.http.get<Car>(`${this.apiUrl}/${id}`);
-  }
-
-  // CREATE a new car
-  createCar(car: Car): Observable<Car> {
-    return this.http.post<Car>(this.apiUrl, car);
   }
 
   // UPDATE an existing car

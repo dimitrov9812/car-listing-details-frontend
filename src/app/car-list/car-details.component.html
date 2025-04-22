@@ -1,46 +1,36 @@
-<h2>Car Listings</h2>
+<h2>Car Details</h2>
 
-<table mat-table [dataSource]="cars()" class="mat-elevation-z8">
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Enter Car ID</mat-label>
+    <input
+      matInput
+      [value]="carId()"
+      (input)="onCarIdChange($event)"
+    />
+  </mat-form-field>
 
-  <!-- Make Column -->
-  <ng-container matColumnDef="make">
-    <th mat-header-cell *matHeaderCellDef> Make </th>
-    <td mat-cell *matCellDef="let car"> {{car.make}} </td>
-  </ng-container>
+  <button mat-raised-button color="primary" (click)="getCar()">Get Car Details</button>
+</div>
 
-  <!-- Model Column -->
-  <ng-container matColumnDef="model">
-    <th mat-header-cell *matHeaderCellDef> Model </th>
-    <td mat-cell *matCellDef="let car"> {{car.model}} </td>
-  </ng-container>
+<div *ngIf="error() as err" style="color: red; margin-top: 10px;">
+  {{ err }}
+</div>
 
-  <!-- Type Column -->
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef> Type </th>
-    <td mat-cell *matCellDef="let car"> {{car.type}} </td>
-  </ng-container>
+<div *ngIf="car() as c" class="car-details">
+  <h3>{{ c.make }} {{ c.model }}</h3>
+  <p><strong>Type:</strong> {{ c.type }}</p>
+  <p><strong>Published:</strong> {{ c.datePublished }}</p>
+  <p><strong>Features:</strong></p>
+  <ul>
+    <li *ngFor="let feature of c.features | keyvalue">
+      {{ feature.key }}: {{ feature.value ? '✅' : '❌' }}
+    </li>
+  </ul>
+  <p><strong>Publisher:</strong> {{ c.publisher.displayName }} ({{ c.publisher.phone }})</p>
 
-  <!-- Publisher Column -->
-  <ng-container matColumnDef="publisher">
-    <th mat-header-cell *matHeaderCellDef> Publisher </th>
-    <td mat-cell *matCellDef="let car">
-      {{car.publisher.displayName}} <br />
-      <small>{{car.publisher.phone}}</small>
-    </td>
-  </ng-container>
-
-  <!-- Actions Column -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions </th>
-    <td mat-cell *matCellDef="let car">
-      <button mat-raised-button color="warn" (click)="selectCar(car.id!)">Select</button>
-      <button mat-raised-button color="warn" (click)="deleteCar(car.id!)">Delete</button>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row;
-      columns: displayedColumns;"
-      [class.selected]="isSelected(row.id)"></tr>
-
-</table>
+  <div *ngIf="c.pictures.length">
+    <h4>Pictures:</h4>
+    <img *ngFor="let pic of c.pictures" [src]="pic" width="150" style="margin: 5px;" />
+  </div>
+</div>
