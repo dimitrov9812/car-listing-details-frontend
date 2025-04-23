@@ -6,6 +6,11 @@
     "allowMultiple": false,
     "hidden": false,
     "service": false,
+    "intents" : [{
+        "name": "DEMO.ShowCarDetails",
+        "displayName": "Show Car Portfolio",
+        "contexts":["CAR"]
+    }],
     "details": {
         "url": "http://localhost:3002",
         "mode": "tab",
