@@ -21,6 +21,7 @@
   <h3>{{ c.make }} {{ c.model }}</h3>
   <p><strong>Type:</strong> {{ c.type }}</p>
   <p><strong>Published:</strong> {{ c.datePublished }}</p>
+  <p class="price"><strong>Price:</strong> {{ c.price }}</p>
   <p><strong>Features:</strong></p>
   <ul>
     <li *ngFor="let feature of c.features | keyvalue">

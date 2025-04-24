@@ -32,6 +32,7 @@ export class CarDetailsComponent implements OnInit {
         this.registerSyncCarsMethod();
         this.registerIntents();
         this.getWorkspaces();
+        this.subscribeToPriceStream();
     }
 
     public registerMethods(): void {
@@ -61,15 +62,15 @@ export class CarDetailsComponent implements OnInit {
     }
 
     public registerSyncCarsMethod(): void {
-        // const methodName = 'DEMO.SyncCars';
-        // const methodHandler = ({ id }: { id: string }) => {
-        //     this.getCar(id);
-        // };
+        const methodName = 'DEMO.SyncCars';
+        const methodHandler = ({ id }: { id: string }) => {
+            this.getCar(id);
+        };
 
-        // this._ioConnectService
-        //     .getIoConnect()
-        //     .interop
-        //     .register(methodName, methodHandler);
+        this._ioConnectService
+            .getIoConnect()
+            .interop
+            .register(methodName, methodHandler);
     }
 
     // Id comes from interop method
@@ -144,5 +145,46 @@ export class CarDetailsComponent implements OnInit {
 
                 this.getCar(this.carId());
             });
+    }
+
+    private subscribeToPriceStream(): void {
+        this._ioConnectService
+            .getIoConnect()
+            .interop
+            .subscribe('Demo.LastTradesStream')
+            .then((subscription) => {
+                subscription.onData((carData) => {
+                    console.log("Price stream data:", carData.data);
+                    console.log(this.car());
+                    if (this.car()?.make === carData.data.carMake) {
+                        console.log("MATCH");
+                        this.car.update(prevCar => {
+                            if (prevCar) {
+                                    const element: any = document.querySelector('.price');
+
+                                    if (element) {
+                                        const origStyle = element.style;
+    
+                                        element.style.color = 'white';
+    
+                                        if (prevCar.price > carData.data.lastPrice) {
+                                            element.style.backgroundColor = 'red';
+                                        } else {
+                                            element.style.backgroundColor = 'green';
+                                        }
+    
+                                        setTimeout(() => {
+                                            element.style = origStyle;
+                                        }, 1000); // 1 second
+                                    }
+
+                                    return { ...prevCar, price: carData.data.lastPrice };
+                                }
+
+                            return prevCar;
+                        });
+                }
+                });
+            })
     }
 }
